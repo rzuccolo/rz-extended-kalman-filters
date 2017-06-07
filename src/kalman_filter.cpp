@@ -1,4 +1,5 @@
 #include "kalman_filter.h"
+#include <iostream>
 
 using Eigen::MatrixXd;
 using Eigen::VectorXd;
@@ -49,11 +50,27 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
 
   VectorXd hx = tools.CartesianToPolar(x_);
   VectorXd y = z - hx;
+
+  const long double PI = 3.141592653589793238L;
+  //float PI = 4*atan(1);
+
+  //Normalization of angles
+  //std::cout<<"phi2="<<y(1)<<"\n";	
+  if ( y(1) > PI){
+	y(1) = y(1) - 2*PI;
+  }
+  
+  if ( y(1) < -PI){
+	y(1) = y(1) + 2*PI;
+  }
+  
+  //std::cout<<"phi3="<<y(1)<<"\n";
   CallRestOfUpdate(y);
 
 }
 
 void KalmanFilter::CallRestOfUpdate(const VectorXd &y) {
+
   MatrixXd Ht = H_.transpose();
   MatrixXd S = H_ * P_ * Ht + R_;
   MatrixXd Si = S.inverse();
