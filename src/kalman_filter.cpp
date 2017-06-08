@@ -52,19 +52,15 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
   VectorXd y = z - hx;
 
   const long double PI = 3.141592653589793238L;
-  //float PI = 4*atan(1);
 
   //Normalization of angles
-  //std::cout<<"phi2="<<y(1)<<"\n";	
-  if ( y(1) > PI){
-	y(1) = y(1) - 2*PI;
-  }
-  
-  if ( y(1) < -PI){
-	y(1) = y(1) + 2*PI;
-  }
-  
-  //std::cout<<"phi3="<<y(1)<<"\n";
+  while(y(1) > PI || y(1) < -PI)
+    {
+      if(y(1) > PI)
+        y(1) -= 2*PI;
+      else y(1) += 2*PI;
+    }
+
   CallRestOfUpdate(y);
 
 }

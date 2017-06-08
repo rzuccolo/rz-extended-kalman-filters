@@ -77,7 +77,7 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
     // first measurement
     cout << "EKF: " << endl;
     ekf_.x_ = VectorXd(4);
-    ekf_.x_ << 1, 1, 1, 1;
+    ekf_.x_ << 1, 1, 5, 2;
 
     //state covariance matrix P
     ekf_.P_ = MatrixXd(4, 4);
@@ -98,7 +98,8 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
       /**
       Initialize state.
       */
-      ekf_.x_ << measurement_pack.raw_measurements_[0], measurement_pack.raw_measurements_[1], 0, 0;
+      ekf_.x_(0) = measurement_pack.raw_measurements_[0];
+      ekf_.x_(1) = measurement_pack.raw_measurements_[1];
 
     }
 
@@ -107,6 +108,9 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
   		ekf_.x_(0) = 1e-4;
   		ekf_.x_(1) = 1e-4;
   	}
+
+    //get initial timestamp
+    previous_timestamp_ = measurement_pack.timestamp_;
 
 
     // done initializing, no need to predict or update
